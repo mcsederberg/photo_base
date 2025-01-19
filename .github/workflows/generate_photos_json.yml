@@ -1,0 +1,26 @@
+name: Generate photos.json
+
+on:
+  push:
+    paths:
+      - "photos/*"
+
+jobs:
+  generate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate photos.json
+        run: |
+          cd photos
+          ls | jq -R -s -c 'split("\n")[:-1]' > ../photos/photos.json
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add photos/photos.json
+          git commit -m "Update photos.json"
+          git push
