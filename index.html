@@ -62,6 +62,7 @@
         })
         .then((photos) => {
           photos.forEach((photo) => {
+            if (photo == "photos.json") return; // Skip the JSON file
             // Create an image element for each photo
             const img = document.createElement("img");
             img.src = `./photos/${photo}`;
