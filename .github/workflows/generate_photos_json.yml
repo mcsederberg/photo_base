@@ -3,7 +3,7 @@ name: Generate photos.json
 on:
   push:
     paths:
-      - "photos/*"
+      - "eventos/*/photos/*"
 
 jobs:
   generate-json:
@@ -12,15 +12,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Generate photos.json
+      - name: Generate photos.json for each photos folder
         run: |
-          cd photos
-          ls | jq -R -s -c 'split("\n")[:-1]' > ../photos/photos.json
+          # Find all the photos directories under /eventos
+          for dir in eventos/*/photos; do
+            # Check if the directory exists
+            if [ -d "$dir" ]; then
+              # Generate photos.json for each photos directory
+              event_name=$(basename $(dirname "$dir"))
+              ls "$dir" | jq -R -s -c 'split("\n")[:-1]' > "$dir/photos.json"
+              echo "Generated $dir/photos.json for event $event_name"
+            fi
+          done
 
       - name: Commit and push changes
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add photos/photos.json
-          git commit -m "Update photos.json"
+          git add eventos/*/photos/photos.json
+          git commit -m "Update photos.json for events"
           git push

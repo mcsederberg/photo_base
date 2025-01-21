@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Gallery</title>
+    <!-- LightGallery CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/lightgallery.js/dist/css/lightgallery.css"
+    />
+
+    <!-- Link to the styles.css file -->
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        margin: 20px 0;
+      }
+      .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        padding: 20px;
+      }
+      .gallery img {
+        width: 150px; /* Adjust as needed */
+        height: auto;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .gallery img:hover {
+        transform: scale(1.1);
+      }
+      /* Center full-screen images */
+      .lg-outer .lg-item img {
+        display: block;
+        margin: auto; /* Center image horizontally */
+        max-width: 100%; /* Ensure the image doesn’t overflow the viewport width */
+        max-height: 100%; /* Ensure the image doesn’t overflow the viewport height */
+        object-fit: contain; /* Ensures aspect ratio is maintained */
+      }
+
+      /* Remove black space and ensure proper alignment */
+      .lg-outer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: black; /* Background color for full-screen mode */
+      }
+
+      /* Optional: Style LightGallery overlay */
+      .lg-backdrop {
+        background: rgba(0, 0, 0, 0.95); /* Semi-transparent dark background */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Event Photo Gallery</h1>
+    <div class="gallery" id="gallery"></div>
+
+    <!-- LightGallery JS -->
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery.js/dist/js/lightgallery.min.js"></script>
+    <div class="gallery" id="gallery"></div>
+
+    <script>
+      const galleryContainer = document.getElementById("gallery");
+
+      fetch("./photos/photos.json")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to load photos.json");
+          }
+          return response.json();
+        })
+        .then((photos) => {
+          photos.forEach((photo) => {
+            if (photo.includes("json")) {
+              return;
+            }
+            const img = document.createElement("img");
+            img.src = `./photos/${photo.thumbnail}`; // Use the thumbnail image
+            img.alt = "Thumbnail";
+            img.setAttribute("data-src", `./photos/${photo.full}`); // Full-size image for LightGallery
+            galleryContainer.appendChild(img);
+          });
+
+          // Initialize LightGallery
+          lightGallery(galleryContainer, {
+            selector: "img",
+            download: true,
+            mode: "lg-fade", // Smooth transition between images
+            addClass: "centered-image", // Custom class for full-screen images
+            preload: 2, // Preload next two images
+            getCaptionFromTitleOrAlt: false,
+          });
+        })
+        .catch((error) => {
+          console.error("Error loading the gallery:", error);
+          galleryContainer.innerHTML =
+            "<p>Failed to load gallery. Please try again later.</p>";
+        });
+    </script>
+  </body>
+</html>
