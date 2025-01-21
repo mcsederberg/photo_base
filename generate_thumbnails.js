@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const inputDir = './eventos/Forum/photos/';
-const outputDir = './photos/eventos/Forum/thumbnails/';
+const outputDir = './eventos/Forum/photos/thumbnails/';
 const thumbnailWidth = 150; // Width of the thumbnails (adjust as needed)
 
 // Ensure the output directory exists
