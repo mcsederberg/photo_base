@@ -88,9 +88,9 @@
               return;
             }
             const img = document.createElement("img");
-            img.src = `./photos/${photo.thumbnail}`; // Use the thumbnail image
+            img.src = `./photos/thumbnails/${photo}`; // Use the thumbnail image
             img.alt = "Thumbnail";
-            img.setAttribute("data-src", `./photos/${photo.full}`); // Full-size image for LightGallery
+            img.setAttribute("data-src", `./photos/${photo}`); // Full-size image for LightGallery
             galleryContainer.appendChild(img);
           });
 
